@@ -13,7 +13,7 @@ Vue Router supports [dynamic imports](https://developer.mozilla.org/en-US/docs/W
 // replace
 // import UserDetails from './views/UserDetails'
 // with
-const UserDetails = () => import('./views/UserDetails')
+const UserDetails = () => import('./views/UserDetails.vue')
 
 const router = createRouter({
   // ...
@@ -75,6 +75,7 @@ export default defineConfig({
             './src/UserProfileEdit',
           ],
         },
+      },
     },
   },
 })

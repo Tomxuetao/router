@@ -23,5 +23,5 @@ Vue Router 是 [Vue.js](https://vuejs.org) 的官方路由。它与 Vue.js 核�
 <HomeSponsors />
 
 <script setup>
-import HomeSponsors from '../.vitepress/components/HomeSponsors.vue'
+import HomeSponsors from '../.vitepress/theme/components/HomeSponsors.vue'
 </script>

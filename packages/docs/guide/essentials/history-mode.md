@@ -64,11 +64,11 @@ While it's not recommended, you can use this mode inside Browser applications bu
 
 ## Example Server Configurations
 
-**Note**: The following examples assume you are serving your app from the root folder. If you deploy to a subfolder, you should use [the `publicPath` option of Vue CLI](https://cli.vuejs.org/config/#publicpath) and the related [`base` property of the router](../../api/#createwebhistory). You also need to adjust the examples below to use the subfolder instead of the root folder (e.g. replacing `RewriteBase /` with `RewriteBase /name-of-your-subfolder/`).
+**Note**: The following examples assume you are serving your app from the root folder. If you deploy to a subfolder, you should use [the `publicPath` option of Vue CLI](https://cli.vuejs.org/config/#publicpath) and the related [`base` property of the router](../../api/#Functions-createWebHistory). You also need to adjust the examples below to use the subfolder instead of the root folder (e.g. replacing `RewriteBase /` with `RewriteBase /name-of-your-subfolder/`).
 
 ### Apache
 
-```apacheconf
+```
 <IfModule mod_negotiation.c>
   Options -MultiViews
 </IfModule>
@@ -191,7 +191,7 @@ Create a `_redirects` file that is included with your deployed files:
 
 In vue-cli, nuxt, and vite projects, this file usually goes under a folder named `static` or `public`.
 
-You can more about the syntax on [Netlify documentation](https://docs.netlify.com/routing/redirects/rewrites-proxies/#history-pushstate-and-single-page-apps). You can also [create a `netlify.toml`](https://docs.netlify.com/configure-builds/file-based-configuration/) to combine _redirections_ with other Netlify features.
+You can read more about the syntax on [Netlify documentation](https://docs.netlify.com/routing/redirects/rewrites-proxies/#history-pushstate-and-single-page-apps). You can also [create a `netlify.toml`](https://docs.netlify.com/configure-builds/file-based-configuration/) to combine _redirections_ with other Netlify features.
 
 ### Vercel
 

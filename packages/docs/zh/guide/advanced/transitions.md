@@ -5,7 +5,7 @@
   title="Learn about route transitions"
 />
 
-想要在你的路径组件上使用转场，并对导航进行动画处理，你需要使用 [v-slot API](../../api/#router-view-s-v-slot)：
+想要在你的路径组件上使用转场，并对导航进行动画处理，你需要使用 [v-slot API](/guide/advanced/composition-api#uselink)：
 
 ```html
 <router-view v-slot="{ Component }">
@@ -64,7 +64,7 @@ const routes = [
 router.afterEach((to, from) => {
   const toDepth = to.path.split('/').length
   const fromDepth = from.path.split('/').length
-  to.meta.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
+  to.meta.transition = toDepth < fromDepth ? 'slide-right' : 'slide-left'
 })
 ```
 

@@ -236,7 +236,7 @@ export interface Router {
    * Returns the {@link RouteLocation | normalized version} of a
    * {@link RouteLocationRaw | route location}. Also includes an `href` property
    * that includes any existing `base`. By default, the `currentLocation` used is
-   * `route.currentRoute` and should only be overridden in advanced use cases.
+   * `router.currentRoute` and should only be overridden in advanced use cases.
    *
    * @param to - Raw route location to resolve
    * @param currentLocation - Optional current location to resolve against
@@ -396,7 +396,7 @@ export function createRouter(options: RouterOptions): Router {
     parentOrRoute: RouteRecordName | RouteRecordRaw,
     route?: RouteRecordRaw
   ) {
-    let parent: Parameters<typeof matcher['addRoute']>[1] | undefined
+    let parent: Parameters<(typeof matcher)['addRoute']>[1] | undefined
     let record: RouteRecordRaw
     if (isRouteName(parentOrRoute)) {
       parent = matcher.getRecordMatcher(parentOrRoute)
@@ -475,10 +475,7 @@ export function createRouter(options: RouterOptions): Router {
         Object.keys(rawLocation.params).length
       ) {
         warn(
-          `Path "${
-            // @ts-expect-error: the type is never
-            rawLocation.path
-          }" was passed with params but they will be ignored. Use a named route alongside params instead.`
+          `Path "${rawLocation.path}" was passed with params but they will be ignored. Use a named route alongside params instead.`
         )
       }
       matcherLocation = assign({}, rawLocation, {
@@ -719,10 +716,10 @@ export function createRouter(options: RouterOptions): Router {
               (redirectedFrom._count = redirectedFrom._count
                 ? // @ts-expect-error
                   redirectedFrom._count + 1
-                : 1) > 10
+                : 1) > 30
             ) {
               warn(
-                `Detected an infinite redirection in a navigation guard when going from "${from.fullPath}" to "${toLocation.fullPath}". Aborting to avoid a Stack Overflow. This will break in production if not fixed.`
+                `Detected a possibly infinite redirection in a navigation guard when going from "${from.fullPath}" to "${toLocation.fullPath}". Aborting to avoid a Stack Overflow. This might break in production if not fixed.`
               )
               return Promise.reject(
                 new Error('Infinite redirect in navigation guard')

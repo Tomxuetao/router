@@ -177,7 +177,7 @@ app.config.globalProperties.append = (path, pathToAppend) =>
 
 ### 删除 `<router-link>` 中的 `event` 和 `tag` 属性
 
-`<router-link>` 中的 `event` 和 `tag` 属性都已被删除。你可以使用 [`v-slot` API](../../api/#router-link-s-v-slot) 来完全定制 `<router-link>`：
+`<router-link>` 中的 `event` 和 `tag` 属性都已被删除。你可以使用 [`v-slot` API](/zh/guide/advanced/composition-api#uselink) 来完全定制 `<router-link>`：
 
 ```html
 将
@@ -197,7 +197,7 @@ app.config.globalProperties.append = (path, pathToAppend) =>
 - 路由现在是基于它们所代表的路由记录来激活的，而不是路由地址对象及其 `path`、`query` 和 `hash` 属性来激活的
 - 只匹配 `path` 部分，`query` 和 `hash` 不再考虑
 
-如果你想自定义这种行为，例如考虑到 `hash` 部分，你应该使用 [`v-slot` API](https://next.router.vuejs.org/api/#router-link-s-v-slot) 来扩展`<router-link>`。
+如果你想自定义这种行为，例如考虑到 `hash` 部分，你应该使用 [`v-slot` API](/zh/guide/advanced/composition-api#uselink) 来扩展`<router-link>`。
 
 **原因**: 详见 [RFC about active matching](https://github.com/vuejs/rfcs/blob/master/active-rfcs/0028-router-active-link.md#summary)。
 
@@ -207,7 +207,7 @@ app.config.globalProperties.append = (path, pathToAppend) =>
 
 ### 删除 `router.match` 改为 `router.resolve`
 
-`router.match` 和 `router.resolve` 已合并到 `router.resolve` 中，签名略有不同。[详见 API](../../api/#resolve)。
+`router.match` 和 `router.resolve` 已合并到 `router.resolve` 中，签名略有不同。[详见 API](/api/interfaces/Router#Methods-resolve)。
 
 **原因**：将用于同一目的的多种方法统一起来。
 
@@ -412,10 +412,12 @@ const routes = [
 
 无论在哪里启动导航，`params`、`query`和 `hash` 中的解码值现在都是一致的（旧的浏览器仍然会产生未编码的 `path` 和 `fullPath`）。初始导航应产生与应用内部导航相同的结果。
 
-给定任何[规范化的路由地址](../../api/#routelocationnormalized):
+<!-- TODO: translate chinese API entries -->
 
-- `path`, `fullPath`中的值不再被解码了。例如，直接在地址栏上写 "https://example.com/hello world"，将得到编码后的版本："https://example.com/hello%20world"，而 "path "和 "fullPath "都是"/hello%20world"。
-- `hash` 现在被解码了，这样就可以复制过来。`router.push({ hash: $route.hash })` 可以直接用于 [scrollBehavior](../../api/#scrollbehavior) 的 `el` 配置中。
+给定任何[规范化的路由地址](/api/interfaces/RouteLocationNormalized.md):
+
+- `path`, `fullPath`中的值不再被解码了。例如，直接在地址栏上写 "<https://example.com/hello> world"，将得到编码后的版本："https://example.com/hello%20world"，而 "path "和 "fullPath "都是"/hello%20world"。
+- `hash` 现在被解码了，这样就可以复制过来。`router.push({ hash: $route.hash })` 可以直接用于 [scrollBehavior](/api/interfaces/RouterOptions.md#Properties-scrollBehavior) 的 `el` 配置中。
 - 当使用 `push`、`resolve` 和 `replace` 并在对象中提供 `string` 地址或 `path` 属性时，**必须进行编码**(像以前的版本一样)。另一方面，`params`、`query` 和 `hash` 必须以未编码的版本提供。
 - 斜线字符(`/`)现在已在 `params` 内正确解码，同时仍在 URL 上产生一个编码版本：`%2F`。
 

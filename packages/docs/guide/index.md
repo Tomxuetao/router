@@ -36,6 +36,8 @@ Note how instead of using regular `a` tags, we use a custom component `router-li
 
 `router-view` will display the component that corresponds to the url. You can put it anywhere to adapt it to your layout.
 
+<VueMasteryLogoLink></VueMasteryLogoLink>
+
 ## JavaScript
 
 ```js
@@ -72,7 +74,7 @@ app.mount('#app')
 // Now the app has started!
 ```
 
-By calling `app.use(router)`, we get access to it as `this.$router` as well as the current route as `this.$route` inside of any component:
+By calling `app.use(router)`, we are triggering the initial navigation and giving access to `this.$router` as well as the current route as `this.$route` inside of any component:
 
 ```js
 // Home.vue
