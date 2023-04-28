@@ -297,21 +297,40 @@ describe('Router', () => {
     expect(router.currentRoute.value).toMatchObject({ params: { p: '0' } })
   })
 
-  it('casts null/undefined params to empty strings', async () => {
+  it('removes null/undefined params', async () => {
     const { router } = await newRouter()
-    expect(
-      router.resolve({ name: 'optional', params: { p: undefined } })
-    ).toMatchObject({
-      params: {},
+
+    const route1 = router.resolve({
+      name: 'optional',
+      params: { p: undefined },
     })
-    expect(
-      router.resolve({ name: 'optional', params: { p: null } })
-    ).toMatchObject({
-      params: {},
+    expect(route1.path).toBe('/optional')
+    expect(route1.params).toEqual({})
+
+    const route2 = router.resolve({
+      name: 'optional',
+      params: { p: null },
     })
+    expect(route2.path).toBe('/optional')
+    expect(route2.params).toEqual({})
+
+    // but keeps empty strings
+    const route3 = router.resolve({
+      name: 'optional',
+      params: { p: '' },
+    })
+    expect(route3.path).toBe('/optional')
+    expect(route3.params).toEqual({ p: '' })
+
     await router.push({ name: 'optional', params: { p: null } })
-    expect(router.currentRoute.value).toMatchObject({ params: {} })
+    expect(router.currentRoute.value.params).toEqual({})
     await router.push({ name: 'optional', params: {} })
+  })
+
+  it('keeps empty strings', async () => {
+    const { router } = await newRouter()
+    const route1 = router.resolve({ name: 'optional', params: { p: '' } })
+    expect(route1.params).toEqual({ p: '' })
   })
 
   it('navigates to same route record but different query', async () => {

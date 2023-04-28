@@ -45,7 +45,7 @@ You will need [Node.js](http://nodejs.org) **version 10+**, and [Pnpm](https://p
 After cloning the repo, run:
 
 ```bash
-$ pnpm install # install the dependencies of the project
+pnpm install # install the dependencies of the project
 ```
 
 A high level overview of tools used:
@@ -66,7 +66,7 @@ The `build` script builds vue-router
 The `play` scripts starts a playground project located at `playground/` that allows you to test things on a browser.
 
 ```bash
-$ pnpm play
+pnpm play
 ```
 
 ### `pnpm test`
@@ -109,8 +109,53 @@ Unit tests are located inside `__tests__`. Consult the [Jest docs](https://jestj
 - Write a unit test whenever possible
 - If a test is specific to a browser, create an e2e (end to end) test and make sure to indicate it on the test
 
+## Contributing Docs
+
+Currently, all the docs can be found in `packages/docs`. It contains the English markdown files while translation(s) are stored in their corresponding `<lang>` sub-folder(s):
+
+- [`zh`](https://github.com/vuejs/router/tree/main/packages/docs/zh): Chinese translation.
+
+Besides that, the `.vitepress` sub-folder is used to put the config and theme, including the i18n information.
+
+Consider the following two options in order to contribute to the translations:
+
+### Translate in a `<lang>` sub-folder and host it on our official repo
+
+If you want to start translating the docs in a new language:
+
+1. Create the corresponding `<lang>` sub-folder for your translation.
+2. Modify the i18n config in `.vitepress` sub-folder.
+3. Translate the docs and run the doc site to self-test locally.
+4. Once you have done all above, create a pull request to our GitHub repo.
+
+If you want to maintain a existing translation:
+
+1. (Repo permission required) First of all, make sure there is a _checkpoint_ branch for the language. Usually it's named as `docs-sync-<lang>`. Notice that:
+    - This branch is always synced to the commit of the original docs that the latest translation of your language is corresponding to. Like `docs-sync-zh` is always to the commit of the original docs that the latest Chinese translation is corresponding to.
+    - Technically, this checkpoint branch should be only updated if the translation is synced to a nearer commit of the original docs. Usually the commit is the HEAD of the `main` branch at that moment.
+2. See what translation you need to do to sync up with the original docs. There are 2 popular ways:
+	  - Git diff command: e.g. `git diff docs-sync-zh..main packages/docs # > debug.log`, or
+	  - GitHub Compare page: e.g. https://github.com/vuejs/router/compare/docs-sync-zh...main (only see the changes in `packages/docs/*`)
+3. Create your own branch and start the translation update, following the diff or compare.
+4. Once you have done all above, create a pull request to our GitHub repo.
+    - It's highly recommended to commit with message like `docs(<lang>): sync update to <the-latest-commit>`. e.g. `docs(zh): sync update to e008551`.
+5. (Repo permission required) **VERY IMPORTANT**: after the pull request is merged, for the future batch of sync-up, do another merge from the latest commit at that moment to the checkpoint branch. e.g. merge commit `e008551` to branch `docs-sync-zh`.
+
+For more real examples, please check out [all the PRs with title "docs(zh): sync" after 2023-01-01](https://github.com/vuejs/router/pulls?q=is%3Apr+created%3A%3E2023-01-01+docs%28zh%29+sync).
+
+### Self-host the translation
+
+You can also host the translation on your own. To create one, just simply fork our GitHub repo and change the content and site config in `packages/docs`. To long-term maintain it, we _highly recommend_ a similar way that we do above for our officially hosted translations:
+
+1. Ensure you create a _checkpoint branch_ (for example, a branch named sync). This branch should always align with the commit of the original documentation that corresponds to your most recent translation.
+2. Utilize the diff result between the latest official repository and your own by using the git diff command or the GitHub Compare page to guide your translation.
+3. Complete the translation process.
+4. Update the _checkpoint branch_ accordingly.
+
+<!-- TODO: add an example once we have got one -->
+
 ## Credits
 
 Thank you to all the people who have already contributed to Vue Router!
 
-<a href="https://github.com/vuejs/vue/graphs/contributors"><img src="https://opencollective.com/vuejs/contributors.svg?width=890" /></a>
+<a href="https://github.com/vuejs/router/graphs/contributors"><img src="https://opencollective.com/vuejs/contributors.svg?width=890" /></a>
