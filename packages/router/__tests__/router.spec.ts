@@ -314,20 +314,24 @@ describe('Router', () => {
     expect(route2.path).toBe('/optional')
     expect(route2.params).toEqual({})
 
-    // but keeps empty strings
-    const route3 = router.resolve({
-      name: 'optional',
-      params: { p: '' },
-    })
-    expect(route3.path).toBe('/optional')
-    expect(route3.params).toEqual({ p: '' })
-
     await router.push({ name: 'optional', params: { p: null } })
     expect(router.currentRoute.value.params).toEqual({})
     await router.push({ name: 'optional', params: {} })
   })
 
-  it('keeps empty strings', async () => {
+  it('removes null/undefined optional params when current location has it', async () => {
+    const { router } = await newRouter()
+
+    await router.push({ name: 'optional', params: { p: 'a' } })
+    await router.push({ name: 'optional', params: { p: null } })
+    expect(router.currentRoute.value.params).toEqual({})
+
+    await router.push({ name: 'optional', params: { p: 'a' } })
+    await router.push({ name: 'optional', params: { p: undefined } })
+    expect(router.currentRoute.value.params).toEqual({})
+  })
+
+  it('keeps empty strings in optional params', async () => {
     const { router } = await newRouter()
     const route1 = router.resolve({ name: 'optional', params: { p: '' } })
     expect(route1.params).toEqual({ p: '' })

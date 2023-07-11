@@ -1,3 +1,25 @@
+## [4.2.4](https://github.com/vuejs/router/compare/v4.2.3...v4.2.4) (2023-07-06)
+
+### Bug Fixes
+
+- allow removing guards within the guard ([d60d36c](https://github.com/vuejs/router/commit/d60d36c49bbbd308618926ff0131890bfed2cdff))
+
+## [4.2.3](https://github.com/vuejs/router/compare/v4.2.2...v4.2.3) (2023-07-05)
+
+### Performance Improvements
+
+- use getter instead of `computed` for route location ([#1916](https://github.com/vuejs/router/issues/1916)) ([f1b839e](https://github.com/vuejs/router/commit/f1b839e7fc46d5b24dadb64cdc8e3cc95010ccfa))
+
+## [4.2.2](https://github.com/vuejs/router/compare/v4.2.1...v4.2.2) (2023-05-29)
+
+This version contains no code changes.
+
+## [4.2.1](https://github.com/vuejs/router/compare/v4.2.0...v4.2.1) (2023-05-18)
+
+### Bug Fixes
+
+- **types:** revert declare module vue ([b8d417a](https://github.com/vuejs/router/commit/b8d417a5b81c94aa5eb252782b07cb2b471d3a4e))
+
 # [4.2.0](https://github.com/vuejs/router/compare/v4.1.6...v4.2.0) (2023-05-11)
 
 ### Bug Fixes

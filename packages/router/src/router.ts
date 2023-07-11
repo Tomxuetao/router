@@ -41,16 +41,7 @@ import {
   stringifyQuery as originalStringifyQuery,
   LocationQuery,
 } from './query'
-import {
-  shallowRef,
-  Ref,
-  nextTick,
-  App,
-  ComputedRef,
-  reactive,
-  unref,
-  computed,
-} from 'vue'
+import { shallowRef, Ref, nextTick, App, unref, shallowReactive } from 'vue'
 import { RouteRecord, RouteRecordNormalized } from './matcher/types'
 import {
   parseURL,
@@ -855,9 +846,9 @@ export function createRouter(options: RouterOptions): Router {
         .then(() => {
           // check the route beforeEnter
           guards = []
-          for (const record of to.matched) {
+          for (const record of enteringRecords) {
             // do not trigger beforeEnter on reused views
-            if (record.beforeEnter && !from.matched.includes(record)) {
+            if (record.beforeEnter) {
               if (isArray(record.beforeEnter)) {
                 for (const beforeEnter of record.beforeEnter)
                   guards.push(guardToPromiseFn(beforeEnter, to, from))
@@ -915,9 +906,9 @@ export function createRouter(options: RouterOptions): Router {
   ): void {
     // navigation is confirmed, call afterGuards
     // TODO: wrap with error handlers
-    for (const guard of afterGuards.list()) {
-      runWithContext(() => guard(to, from, failure))
-    }
+    afterGuards
+      .list()
+      .forEach(guard => runWithContext(() => guard(to, from, failure)))
   }
 
   /**
@@ -938,7 +929,7 @@ export function createRouter(options: RouterOptions): Router {
 
     // only consider as push if it's not the first navigation
     const isFirstNavigation = from === START_LOCATION_NORMALIZED
-    const state = !isBrowser ? {} : history.state
+    const state: Partial<HistoryState> | null = !isBrowser ? {} : history.state
 
     // change URL only if the user did a push/replace and if it's not the initial navigation because
     // it's just reflecting the url
@@ -1235,18 +1226,16 @@ export function createRouter(options: RouterOptions): Router {
         })
       }
 
-      const reactiveRoute = {} as {
-        [k in keyof RouteLocationNormalizedLoaded]: ComputedRef<
-          RouteLocationNormalizedLoaded[k]
-        >
-      }
+      const reactiveRoute = {} as RouteLocationNormalizedLoaded
       for (const key in START_LOCATION_NORMALIZED) {
-        // @ts-expect-error: the key matches
-        reactiveRoute[key] = computed(() => currentRoute.value[key])
+        Object.defineProperty(reactiveRoute, key, {
+          get: () => currentRoute.value[key as keyof RouteLocationNormalized],
+          enumerable: true,
+        })
       }
 
       app.provide(routerKey, router)
-      app.provide(routeLocationKey, reactive(reactiveRoute))
+      app.provide(routeLocationKey, shallowReactive(reactiveRoute))
       app.provide(routerViewLocationKey, currentRoute)
 
       const unmountApp = app.unmount

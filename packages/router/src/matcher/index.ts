@@ -297,7 +297,7 @@ export function createRouterMatcher(
 
       if (__DEV__ && !path.startsWith('/')) {
         warn(
-          `The Matcher cannot resolve relative paths but received "${path}". Unless you directly called \`matcher.resolve("${path}")\`, this is probably a bug in vue-router. Please open an issue at https://new-issue.vuejs.org/?repo=vuejs/router.`
+          `The Matcher cannot resolve relative paths but received "${path}". Unless you directly called \`matcher.resolve("${path}")\`, this is probably a bug in vue-router. Please open an issue at https://github.com/vuejs/router/issues/new/choose.`
         )
       }
 
@@ -410,7 +410,7 @@ function normalizeRecordProps(
     // NOTE: we could also allow a function to be applied to every component.
     // Would need user feedback for use cases
     for (const name in record.components)
-      propsObject[name] = typeof props === 'boolean' ? props : props[name]
+      propsObject[name] = typeof props === 'object' ? props[name] : props
   }
 
   return propsObject
