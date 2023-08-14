@@ -219,8 +219,7 @@ export type _RouteRecordProps =
 
 // TODO: could this be moved to matcher?
 /**
- * Common properties among all kind of {@link RouteRecordRaw}
- * @internal
+ * Internal type for common properties among all kind of {@link RouteRecordRaw}.
  */
 export interface _RouteRecordBase extends PathParserOptions {
   /**
@@ -246,7 +245,7 @@ export interface _RouteRecordBase extends PathParserOptions {
   alias?: string | string[]
 
   /**
-   * Name for the route record.
+   * Name for the route record. Must be unique.
    */
   name?: RouteRecordName
 
@@ -483,7 +482,9 @@ export interface NavigationGuardNext {
   // _called: boolean
 }
 
-export type NavigationGuardNextCallback = (vm: ComponentPublicInstance) => any
+export type NavigationGuardNextCallback = (
+  vm: ComponentPublicInstance
+) => unknown
 
 export type NavigationGuardReturn =
   | void
