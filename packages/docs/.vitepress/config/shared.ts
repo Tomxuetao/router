@@ -30,14 +30,15 @@ export const slugify = (str: string): string =>
     .replace(/^(\d)/, '_$1')
 
 const productionHead: HeadConfig[] = [
-  [
-    'script',
-    {
-      src: 'https://unpkg.com/thesemetrics@latest',
-      async: '',
-      type: 'text/javascript',
-    },
-  ],
+  // NOTE: removed because there is a bug that makes it load forever
+  // [
+  //   'script',
+  //   {
+  //     src: 'https://unpkg.com/thesemetrics@latest',
+  //     async: '',
+  //     type: 'text/javascript',
+  //   },
+  // ],
 ]
 
 export const sharedConfig = defineConfig({
@@ -91,6 +92,16 @@ export const sharedConfig = defineConfig({
     //     content: META_IMAGE,
     //   },
     // ],
+
+    [
+      'script',
+      {
+        src: 'https://cdn.usefathom.com/script.js',
+        'data-site': 'RENJQDQI',
+        'data-spa': 'auto',
+        defer: '',
+      },
+    ],
 
     // Vue School Top banner
     [
