@@ -58,6 +58,11 @@ export interface MatcherLocationAsPath {
  */
 export interface MatcherLocationAsName {
   name: RouteRecordName
+  // to allow checking location.path == null
+  /**
+   * Ignored path property since we are dealing with a relative location. Only `undefined` is allowed.
+   */
+  path?: undefined
   params?: RouteParams
 }
 
@@ -65,6 +70,11 @@ export interface MatcherLocationAsName {
  * @internal
  */
 export interface MatcherLocationAsRelative {
+  // to allow checking location.path == null
+  /**
+   * Ignored path property since we are dealing with a relative location. Only `undefined` is allowed.
+   */
+  path?: undefined
   params?: RouteParams
 }
 
@@ -73,6 +83,11 @@ export interface MatcherLocationAsRelative {
  */
 export interface LocationAsRelativeRaw {
   name?: RouteRecordName
+  // to allow checking location.path == null
+  /**
+   * Ignored path property since we are dealing with a relative location. Only `undefined` is allowed.
+   */
+  path?: undefined
   params?: RouteParamsRaw
 }
 

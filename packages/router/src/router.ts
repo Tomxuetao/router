@@ -8,6 +8,7 @@ import {
   RouteLocationNormalizedLoaded,
   RouteLocation,
   RouteRecordName,
+  isRouteLocation,
   isRouteName,
   NavigationGuardWithThis,
   RouteLocationOptions,
@@ -397,6 +398,14 @@ export function createRouter(options: RouterOptions): Router {
     let record: RouteRecordRaw
     if (isRouteName(parentOrRoute)) {
       parent = matcher.getRecordMatcher(parentOrRoute)
+      if (__DEV__ && !parent) {
+        warn(
+          `Parent route "${String(
+            parentOrRoute
+          )}" not found when adding child route`,
+          route
+        )
+      }
       record = route!
     } else {
       record = parentOrRoute
@@ -460,10 +469,18 @@ export function createRouter(options: RouterOptions): Router {
       })
     }
 
+    if (__DEV__ && !isRouteLocation(rawLocation)) {
+      warn(
+        `router.resolve() was passed an invalid location. This will fail in production.\n- Location:`,
+        rawLocation
+      )
+      rawLocation = {}
+    }
+
     let matcherLocation: MatcherLocationRaw
 
     // path could be relative in object as well
-    if ('path' in rawLocation) {
+    if (rawLocation.path != null) {
       if (
         __DEV__ &&
         'params' in rawLocation &&
@@ -525,7 +542,7 @@ export function createRouter(options: RouterOptions): Router {
       } else if (!matchedRoute.matched.length) {
         warn(
           `No match found for location with path "${
-            'path' in rawLocation ? rawLocation.path : rawLocation
+            rawLocation.path != null ? rawLocation.path : rawLocation
           }"`
         )
       }
@@ -606,7 +623,7 @@ export function createRouter(options: RouterOptions): Router {
 
       if (
         __DEV__ &&
-        !('path' in newTargetLocation) &&
+        newTargetLocation.path == null &&
         !('name' in newTargetLocation)
       ) {
         warn(
@@ -626,7 +643,7 @@ export function createRouter(options: RouterOptions): Router {
           query: to.query,
           hash: to.hash,
           // avoid transferring params if the redirect has a path
-          params: 'path' in newTargetLocation ? {} : to.params,
+          params: newTargetLocation.path != null ? {} : to.params,
         },
         newTargetLocation
       )
@@ -879,7 +896,8 @@ export function createRouter(options: RouterOptions): Router {
             enteringRecords,
             'beforeRouteEnter',
             to,
-            from
+            from,
+            runWithContext
           )
           guards.push(canceledNavigationCheck)
 

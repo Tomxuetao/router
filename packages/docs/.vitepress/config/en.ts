@@ -85,16 +85,16 @@ export const enConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
               link: '/guide/essentials/route-matching-syntax.html',
             },
             {
+              text: 'Named Routes',
+              link: '/guide/essentials/named-routes.html',
+            },
+            {
               text: 'Nested Routes',
               link: '/guide/essentials/nested-routes.html',
             },
             {
               text: 'Programmatic Navigation',
               link: '/guide/essentials/navigation.html',
-            },
-            {
-              text: 'Named Routes',
-              link: '/guide/essentials/named-routes.html',
             },
             {
               text: 'Named Views',
@@ -107,6 +107,10 @@ export const enConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
             {
               text: 'Passing Props to Route Components',
               link: '/guide/essentials/passing-props.html',
+            },
+            {
+              text: 'Active links',
+              link: '/guide/essentials/active-links.html',
             },
             {
               text: 'Different History modes',
@@ -133,6 +137,10 @@ export const enConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
             {
               text: 'Composition API',
               link: '/guide/advanced/composition-api.html',
+            },
+            {
+              text: 'RouterView slot',
+              link: '/guide/advanced/router-view-slot.html',
             },
             {
               text: 'Transitions',

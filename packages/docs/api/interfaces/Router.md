@@ -12,7 +12,7 @@ Router instance.
 
 ### currentRoute
 
-• `Readonly` **currentRoute**: `Ref`<[`RouteLocationNormalizedLoaded`](RouteLocationNormalizedLoaded.md)\>
+• `Readonly` **currentRoute**: `Ref`\<[`RouteLocationNormalizedLoaded`](RouteLocationNormalizedLoaded.md)\>
 
 Current [RouteLocationNormalized](RouteLocationNormalized.md)
 
@@ -53,8 +53,6 @@ Add a new [route record](../index.md#RouteRecordRaw) as the child of an existing
 
 ▸ (): `void`
 
-Add a new [route record](../index.md#RouteRecordRaw) as the child of an existing route.
-
 ##### Returns
 
 `void`
@@ -74,8 +72,6 @@ Add a new [route record](../index.md#RouteRecordRaw) to the router.
 `fn`
 
 ▸ (): `void`
-
-Add a new [route record](../index.md#RouteRecordRaw) to the router.
 
 ##### Returns
 
@@ -104,24 +100,9 @@ a function that removes the registered hook
 
 ▸ (): `void`
 
-Add a navigation hook that is executed after every navigation. Returns a
-function that removes the registered hook.
-
 ##### Returns
 
 `void`
-
-a function that removes the registered hook
-
-**`Example`**
-
-```js
-router.afterEach((to, from, failure) => {
-  if (isNavigationFailure(failure)) {
-    console.log('failed navigation', failure)
-  }
-})
-```
 
 **`Example`**
 
@@ -159,16 +140,13 @@ function that removes the registered guard.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `guard` | [`NavigationGuardWithThis`](NavigationGuardWithThis.md)<`undefined`\> | navigation guard to add |
+| `guard` | [`NavigationGuardWithThis`](NavigationGuardWithThis.md)\<`undefined`\> | navigation guard to add |
 
 #### Returns
 
 `fn`
 
 ▸ (): `void`
-
-Add a navigation guard that executes before any navigation. Returns a
-function that removes the registered guard.
 
 ##### Returns
 
@@ -189,7 +167,7 @@ registered guard.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `guard` | [`NavigationGuardWithThis`](NavigationGuardWithThis.md)<`undefined`\> | navigation guard to add |
+| `guard` | [`NavigationGuardWithThis`](NavigationGuardWithThis.md)\<`undefined`\> | navigation guard to add |
 
 #### Returns
 
@@ -199,24 +177,9 @@ a function that removes the registered guard
 
 ▸ (): `void`
 
-Add a navigation guard that executes before navigation is about to be
-resolved. At this state all component have been fetched and other
-navigation guards have been successful. Returns a function that removes the
-registered guard.
-
 ##### Returns
 
 `void`
-
-a function that removes the registered guard
-
-**`Example`**
-
-```js
-router.beforeResolve(to => {
-  if (to.meta.requiresAuth && !isAuthenticated) return false
-})
-```
 
 **`Example`**
 
@@ -292,7 +255,7 @@ ___
 
 ### isReady
 
-▸ **isReady**(): `Promise`<`void`\>
+▸ **isReady**(): `Promise`\<`void`\>
 
 Returns a Promise that resolves when the router has completed the initial
 navigation, which means it has resolved all async enter hooks and async
@@ -306,7 +269,7 @@ picks it up from the URL.
 
 #### Returns
 
-`Promise`<`void`\>
+`Promise`\<`void`\>
 
 ___
 
@@ -332,12 +295,6 @@ is required to render a route.
 
 ▸ (): `void`
 
-Adds an error handler that is called every time a non caught error happens
-during navigation. This includes errors thrown synchronously and
-asynchronously, errors returned or passed to `next` in any navigation
-guard, and errors occurred when trying to resolve an async component that
-is required to render a route.
-
 ##### Returns
 
 `void`
@@ -346,7 +303,7 @@ ___
 
 ### push
 
-▸ **push**(`to`): `Promise`<`undefined` \| `void` \| [`NavigationFailure`](NavigationFailure.md)\>
+▸ **push**(`to`): `Promise`\<`undefined` \| `void` \| [`NavigationFailure`](NavigationFailure.md)\>
 
 Programmatically navigate to a new URL by pushing an entry in the history
 stack.
@@ -359,7 +316,7 @@ stack.
 
 #### Returns
 
-`Promise`<`undefined` \| `void` \| [`NavigationFailure`](NavigationFailure.md)\>
+`Promise`\<`undefined` \| `void` \| [`NavigationFailure`](NavigationFailure.md)\>
 
 ___
 
@@ -383,7 +340,7 @@ ___
 
 ### replace
 
-▸ **replace**(`to`): `Promise`<`undefined` \| `void` \| [`NavigationFailure`](NavigationFailure.md)\>
+▸ **replace**(`to`): `Promise`\<`undefined` \| `void` \| [`NavigationFailure`](NavigationFailure.md)\>
 
 Programmatically navigate to a new URL by replacing the current entry in
 the history stack.
@@ -396,13 +353,13 @@ the history stack.
 
 #### Returns
 
-`Promise`<`undefined` \| `void` \| [`NavigationFailure`](NavigationFailure.md)\>
+`Promise`\<`undefined` \| `void` \| [`NavigationFailure`](NavigationFailure.md)\>
 
 ___
 
 ### resolve
 
-▸ **resolve**(`to`, `currentLocation?`): [`RouteLocation`](RouteLocation.md) & { `href`: `string`  }
+▸ **resolve**(`to`, `currentLocation?`): [`RouteLocation`](RouteLocation.md) & \{ `href`: `string`  }
 
 Returns the [normalized version](RouteLocation.md) of a
 [route location](../index.md#RouteLocationRaw). Also includes an `href` property
@@ -418,4 +375,4 @@ that includes any existing `base`. By default, the `currentLocation` used is
 
 #### Returns
 
-[`RouteLocation`](RouteLocation.md) & { `href`: `string`  }
+[`RouteLocation`](RouteLocation.md) & \{ `href`: `string`  }

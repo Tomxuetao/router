@@ -1,4 +1,5 @@
 import { defineConfig, HeadConfig } from 'vitepress'
+import { zhSearch } from './zh'
 
 // TODO:
 // export const META_IMAGE = 'https://router.vuejs.org/social.png'
@@ -122,7 +123,7 @@ export const sharedConfig = defineConfig({
     outline: [2, 3],
 
     socialLinks: [
-      { icon: 'twitter', link: 'https://twitter.com/posva' },
+      { icon: 'x', link: 'https://twitter.com/posva' },
       {
         icon: 'github',
         link: 'https://github.com/vuejs/router',
@@ -143,10 +144,14 @@ export const sharedConfig = defineConfig({
       text: 'Suggest changes',
     },
 
-    algolia: {
-      appId: 'BTNTW3I1XP',
-      apiKey: '771d10c8c5cc48f7922f15048b4d931c',
-      indexName: 'next_router_vuejs',
+    search: {
+      provider: 'algolia',
+      options: {
+        appId: 'BTNTW3I1XP',
+        apiKey: '771d10c8c5cc48f7922f15048b4d931c',
+        indexName: 'next_router_vuejs',
+        locales: { ...zhSearch },
+      },
     },
 
     carbonAds: {

@@ -64,12 +64,12 @@ If you omit the second parameter: `isNavigationFailure(failure)`, it will only c
 
 ## Global navigation failures
 
-You can detect global navigation failures globally by using the [`router.afterEach()` navigation guard](./navigation-guards.md#global-after-hooks):
+You can detect global navigation failures globally by using the [`router.afterEach()` navigation guard](./navigation-guards.md#Global-After-Hooks):
 
 ```ts
 router.afterEach((to, from, failure) => {
   if (failure) {
-    sendToAnalytics(to, from failure)
+    sendToAnalytics(to, from, failure)
   }
 })
 ```
