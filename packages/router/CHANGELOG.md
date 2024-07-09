@@ -1,3 +1,39 @@
+# [4.4.0](https://github.com/vuejs/router/compare/v4.4.0-alpha.3...v4.4.0) (2024-06-21)
+
+This version introduces native support for [typed routes via the `RouteNamedMap`](https://router.vuejs.org/guide/advanced/typed-routes.html). It is now possible to define a map without [unplugin-vue-router](https://uvr.esm.is) and have the types inferred automatically. It is still recommended to use [unplugin-vue-router](https://uvr.esm.is) to automatically generate these types.
+
+### Features
+
+- add a clearRoutes method ([abe223d](https://github.com/vuejs/router/commit/abe223dab44a092682eed5f77b0e231ff2392076))
+- typed routes ([f92282b](https://github.com/vuejs/router/commit/f92282b896ccf92360d781832435e1ae86314e0e))
+
+### Bug Fixes
+
+- allow arbitrary strings in RouteLocationRaw ([a7a8452](https://github.com/vuejs/router/commit/a7a8452d137024d607d803a4009a5d55419259f2))
+
+## [4.3.3](https://github.com/vuejs/router/compare/v4.3.2...v4.3.3) (2024-06-10)
+
+### Performance Improvements
+
+- use a binary search for insertMatcher ([#2137](https://github.com/vuejs/router/issues/2137)) ([e9f6ae3](https://github.com/vuejs/router/commit/e9f6ae3d61b91892f88fa26a6c224e0166b874ff)) This partially addresses #2132
+
+## [4.3.2](https://github.com/vuejs/router/compare/v4.3.1...v4.3.2) (2024-04-18)
+
+### Bug Fixes
+
+- Revert "fix: avoid normalizing the fullPath ([#2189](https://github.com/vuejs/router/issues/2189))" ([b78aa98](https://github.com/vuejs/router/commit/b78aa98792e86e08b76eb879e496fe1c300c1e18)), closes [vuejs/router#2216](https://github.com/vuejs/router/issues/2216). This was creating other bugs when reusing a normalized location (common pattern). The original issue wasn't a problem in practice as the consistent values are the query, params, and hash.
+
+## [4.3.1](https://github.com/vuejs/router/compare/v4.3.0...v4.3.1) (2024-04-17)
+
+### Bug Fixes
+
+- avoid normalizing the fullPath ([#2189](https://github.com/vuejs/router/issues/2189)) ([c54fc84](https://github.com/vuejs/router/commit/c54fc8407bd1944a3b724fbcc7f6fbac5ff45f0f)), closes [vuejs/router#2187](https://github.com/vuejs/router/issues/2187)
+
+### Features
+
+- **dx:** warn when `addRoute` cannot find the parent ([#2157](https://github.com/vuejs/router/issues/2157)) ([6377083](https://github.com/vuejs/router/commit/63770832d01a86a7464fde744e94058aae07de2e))
+- **dx:** warn when passing undefined/null locations ([#2158](https://github.com/vuejs/router/issues/2158)) ([089378b](https://github.com/vuejs/router/commit/089378bb973a6d91ddfe8eea76a670cd805fb5cf))
+
 # [4.3.0](https://github.com/vuejs/router/compare/v4.2.5...v4.3.0) (2024-02-21)
 
 ### Bug Fixes
