@@ -66,7 +66,7 @@ export const RouterViewImpl = /*#__PURE__*/ defineComponent({
       () => props.route || injectedRoute.value
     )
     const injectedDepth = inject(viewDepthKey, 0)
-    // The depth changes based on empty components option, which allows passthrough routes e.g. routes with children
+    // The depth changes based on empty components option, which allows pass through routes e.g. routes with children
     // that are used to reuse the `path` property
     const depth = computed<number>(() => {
       let initialDepth = unref(injectedDepth)
@@ -84,10 +84,7 @@ export const RouterViewImpl = /*#__PURE__*/ defineComponent({
       () => routeToDisplay.value.matched[depth.value]
     )
 
-    provide(
-      viewDepthKey,
-      computed(() => depth.value + 1)
-    )
+    provide(viewDepthKey, computed(() => depth.value + 1))
     provide(matchedRouteKey, matchedRouteRef)
     provide(routerViewLocationKey, routeToDisplay)
 
@@ -120,13 +117,9 @@ export const RouterViewImpl = /*#__PURE__*/ defineComponent({
         }
 
         // trigger beforeRouteEnter next callbacks
-        if (
-          instance &&
-          to &&
-          // if there is no instance but to and from are the same this might be
-          // the first visit
-          (!from || !isSameRouteRecord(to, from) || !oldInstance)
-        ) {
+        // if there is no instance but to and from are the same this might be
+        // the first visit
+        if (instance && to && (!from || !isSameRouteRecord(to, from) || !oldInstance)) {
           ;(to.enterCallbacks[name] || []).forEach(callback =>
             callback(instance)
           )
@@ -141,8 +134,7 @@ export const RouterViewImpl = /*#__PURE__*/ defineComponent({
       // navigated to a different location so the value is different
       const currentName = props.name
       const matchedRoute = matchedRouteRef.value
-      const ViewComponent =
-        matchedRoute && matchedRoute.components![currentName]
+      const ViewComponent = matchedRoute && matchedRoute.components![currentName]
 
       if (!ViewComponent) {
         return normalizeSlot(slots.default, { Component: ViewComponent, route })
@@ -165,19 +157,9 @@ export const RouterViewImpl = /*#__PURE__*/ defineComponent({
         }
       }
 
-      const component = h(
-        ViewComponent,
-        assign({}, routeProps, attrs, {
-          onVnodeUnmounted,
-          ref: viewRef,
-        })
-      )
+      const component = h(ViewComponent, assign({}, routeProps, attrs, { onVnodeUnmounted, ref: viewRef, }))
 
-      if (
-        (__DEV__ || __FEATURE_PROD_DEVTOOLS__) &&
-        isBrowser &&
-        component.ref
-      ) {
+      if ((__DEV__ || __FEATURE_PROD_DEVTOOLS__) && isBrowser && component.ref) {
         // TODO: can display if it's an alias, its props
         const info: RouterViewDevtoolsContext = {
           depth: depth.value,
@@ -186,9 +168,7 @@ export const RouterViewImpl = /*#__PURE__*/ defineComponent({
           meta: matchedRoute.meta,
         }
 
-        const internalInstances = isArray(component.ref)
-          ? component.ref.map(r => r.i)
-          : [component.ref.i]
+        const internalInstances = isArray(component.ref) ? component.ref.map(r => r.i) : [component.ref.i]
 
         internalInstances.forEach(instance => {
           // @ts-expect-error
@@ -196,11 +176,10 @@ export const RouterViewImpl = /*#__PURE__*/ defineComponent({
         })
       }
 
+      // pass the vnode to the slot as a prop.
+      // h and <component :is="..."> both accept vnodes
       return (
-        // pass the vnode to the slot as a prop.
-        // h and <component :is="..."> both accept vnodes
-        normalizeSlot(slots.default, { Component: component, route }) ||
-        component
+        normalizeSlot(slots.default, { Component: component, route }) || component
       )
     }
   },
@@ -241,14 +220,8 @@ export const RouterView = RouterViewImpl as unknown as {
 function warnDeprecatedUsage() {
   const instance = getCurrentInstance()!
   const parentName = instance.parent && instance.parent.type.name
-  const parentSubTreeType =
-    instance.parent && instance.parent.subTree && instance.parent.subTree.type
-  if (
-    parentName &&
-    (parentName === 'KeepAlive' || parentName.includes('Transition')) &&
-    typeof parentSubTreeType === 'object' &&
-    (parentSubTreeType as Component).name === 'RouterView'
-  ) {
+  const parentSubTreeType = instance.parent && instance.parent.subTree && instance.parent.subTree.type
+  if (parentName && (parentName === 'KeepAlive' || parentName.includes('Transition')) && typeof parentSubTreeType === 'object' && (parentSubTreeType as Component).name === 'RouterView') {
     const comp = parentName === 'KeepAlive' ? 'keep-alive' : 'transition'
     warn(
       `<router-view> can no longer be used directly inside <transition> or <keep-alive>.\n` +

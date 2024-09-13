@@ -214,8 +214,7 @@ export function useLink<Name extends keyof RouteMap = keyof RouteMap>(
     e: MouseEvent = {} as MouseEvent
   ): Promise<void | NavigationFailure> {
     if (guardEvent(e)) {
-      return router[unref(props.replace) ? 'replace' : 'push'](
-        unref(props.to)
+      return router[unref(props.replace) ? 'replace' : 'push'](unref(props.to)
         // avoid uncaught errors are they are logged anyway
       ).catch(noop)
     }
@@ -313,9 +312,7 @@ export const RouterLinkImpl = /*#__PURE__*/ defineComponent({
         : h(
             'a',
             {
-              'aria-current': link.isExactActive
-                ? props.ariaCurrentValue
-                : null,
+              'aria-current': link.isExactActive ? props.ariaCurrentValue : null,
               href: link.href,
               // this would override user added attrs but Vue will still add
               // the listener, so we end up triggering both

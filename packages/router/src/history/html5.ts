@@ -35,10 +35,7 @@ interface StateEntry extends HistoryState {
  * @param base - The base path
  * @param location - The window.location object
  */
-function createCurrentLocation(
-  base: string,
-  location: Location
-): HistoryLocation {
+function createCurrentLocation(base: string, location: Location): HistoryLocation {
   const { pathname, search, hash } = location
   // allows hash bases like #, /#, #/, #!, #!/, /#!/, or even /folder#end
   const hashPos = base.indexOf('#')
@@ -55,23 +52,14 @@ function createCurrentLocation(
   return path + search + hash
 }
 
-function useHistoryListeners(
-  base: string,
-  historyState: ValueContainer<StateEntry>,
-  currentLocation: ValueContainer<HistoryLocation>,
-  replace: RouterHistory['replace']
-) {
+function useHistoryListeners(base: string, historyState: ValueContainer<StateEntry>, currentLocation: ValueContainer<HistoryLocation>, replace: RouterHistory['replace']) {
   let listeners: NavigationCallback[] = []
   let teardowns: Array<() => void> = []
   // TODO: should it be a stack? a Dict. Check if the popstate listener
   // can trigger twice
   let pauseState: HistoryLocation | null = null
 
-  const popStateHandler: PopStateListener = ({
-    state,
-  }: {
-    state: StateEntry | null
-  }) => {
+  const popStateHandler: PopStateListener = ({ state, }: { state: StateEntry | null }) => {
     const to = createCurrentLocation(base, location)
     const from: HistoryLocation = currentLocation.value
     const fromState: StateEntry = historyState.value
@@ -100,11 +88,7 @@ function useHistoryListeners(
       listener(currentLocation.value, from, {
         delta,
         type: NavigationType.pop,
-        direction: delta
-          ? delta > 0
-            ? NavigationDirection.forward
-            : NavigationDirection.back
-          : NavigationDirection.unknown,
+        direction: delta ? delta > 0 ? NavigationDirection.forward : NavigationDirection.back : NavigationDirection.unknown,
       })
     })
   }
@@ -119,7 +103,8 @@ function useHistoryListeners(
 
     const teardown = () => {
       const index = listeners.indexOf(callback)
-      if (index > -1) listeners.splice(index, 1)
+      if (index > -1)
+        listeners.splice(index, 1)
     }
 
     teardowns.push(teardown)
@@ -136,7 +121,8 @@ function useHistoryListeners(
   }
 
   function destroy() {
-    for (const teardown of teardowns) teardown()
+    for (const teardown of teardowns)
+      teardown()
     teardowns = []
     window.removeEventListener('popstate', popStateHandler)
     window.removeEventListener('beforeunload', beforeUnloadListener)
@@ -204,11 +190,7 @@ function useHistoryStateNavigation(base: string) {
     )
   }
 
-  function changeLocation(
-    to: HistoryLocation,
-    state: StateEntry,
-    replace: boolean
-  ): void {
+  function changeLocation(to: HistoryLocation, state: StateEntry, replace: boolean): void {
     /**
      * if a base tag is provided, and we are on a normal domain, we have to
      * respect the provided `base` attribute because pushState() will use it and
@@ -219,12 +201,7 @@ function useHistoryStateNavigation(base: string) {
      * base tag we can just use everything after the `#`.
      */
     const hashIndex = base.indexOf('#')
-    const url =
-      hashIndex > -1
-        ? (location.host && document.querySelector('base')
-            ? base
-            : base.slice(hashIndex)) + to
-        : createBaseLocation() + base + to
+    const url = hashIndex > -1 ? (location.host && document.querySelector('base') ? base : base.slice(hashIndex)) + to : createBaseLocation() + base + to
     try {
       // BROWSER QUIRK
       // NOTE: Safari throws a SecurityError when calling this function 100 times in 30 seconds
@@ -315,14 +292,14 @@ export function createWebHistory(base?: string): RouterHistory {
   base = normalizeBase(base)
 
   const historyNavigation = useHistoryStateNavigation(base)
-  const historyListeners = useHistoryListeners(
-    base,
+  const historyListeners = useHistoryListeners(base,
     historyNavigation.state,
     historyNavigation.location,
     historyNavigation.replace
   )
   function go(delta: number, triggerListeners = true) {
-    if (!triggerListeners) historyListeners.pauseListeners()
+    if (!triggerListeners)
+      historyListeners.pauseListeners()
     history.go(delta)
   }
 

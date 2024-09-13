@@ -73,6 +73,12 @@ export function createRouterMatcher(
     return matcherMap.get(name)
   }
 
+  /**
+   * 添加路由记录
+   * @param record 路由配置
+   * @param parent 父级路由匹配器
+   * @param originalRecord 原始匹配器
+   */
   function addRoute(
     record: RouteRecordRaw,
     parent?: RouteRecordMatcher,
@@ -80,6 +86,7 @@ export function createRouterMatcher(
   ) {
     // used later on to remove by name
     const isRootAdd = !originalRecord
+    // 调用 normalizeRouteRecord 标准化路由配置
     const mainNormalizedRecord = normalizeRouteRecord(record)
     if (__DEV__) {
       checkChildMissingNameWithEmptyPath(mainNormalizedRecord, parent)
@@ -89,6 +96,7 @@ export function createRouterMatcher(
     const options: PathParserOptions = mergeOptions(globalOptions, record)
     // generate an array of records to correctly handle aliases
     const normalizedRecords: RouteRecordNormalized[] = [mainNormalizedRecord]
+    // 处理 record 的 alias 生成 normalizedRecords
     if ('alias' in record) {
       const aliases =
         typeof record.alias === 'string' ? [record.alias] : record.alias!
@@ -119,11 +127,13 @@ export function createRouterMatcher(
     let matcher: RouteRecordMatcher
     let originalMatcher: RouteRecordMatcher | undefined
 
+    // 遍历 normalizedRecords 生成 matcher
     for (const normalizedRecord of normalizedRecords) {
       const { path } = normalizedRecord
       // Build up the path for nested routes if the child isn't an absolute
       // route. Only add the / delimiter if the child path isn't empty and if the
       // parent path doesn't have a trailing slash
+      // 如果有 parent, 拼接子路由的路径
       if (parent && path[0] !== '/') {
         const parentPath = parent.record.path
         const connectingSlash =
@@ -135,11 +145,12 @@ export function createRouterMatcher(
       if (__DEV__ && normalizedRecord.path === '*') {
         throw new Error(
           'Catch all routes ("*") must now be defined using a param with a custom regexp.\n' +
-            'See more at https://router.vuejs.org/guide/migration/#Removed-star-or-catch-all-routes.'
+            'See more at https://next.router.vuejs.org/guide/migration/#removed-star-or-catch-all-routes.'
         )
       }
 
       // create the object beforehand, so it can be passed to children
+      // 使用 createRouteRecordMatcher 生成 matcher
       matcher = createRouteRecordMatcher(normalizedRecord, parent, options)
 
       if (__DEV__ && parent && path[0] === '/')
@@ -188,8 +199,20 @@ export function createRouterMatcher(
       // if (parent && isAliasRecord(originalRecord)) {
       //   parent.children.push(originalRecord)
       // }
+
+      // Avoid adding a record that doesn't display anything. This allows passing through records without a component to
+      // not be reached and pass through the catch all route
+      if (
+        (matcher.record.components &&
+          Object.keys(matcher.record.components).length) ||
+        matcher.record.name ||
+        matcher.record.redirect
+      ) {
+        insertMatcher(matcher)
+      }
     }
 
+    // 返回移除路由的函数
     return originalMatcher
       ? () => {
           // since other matchers are aliases, they should be removed by the original matcher
@@ -206,14 +229,18 @@ export function createRouterMatcher(
       if (matcher) {
         matcherMap.delete(matcherRef)
         matchers.splice(matchers.indexOf(matcher), 1)
+        // 递归删除相关联的匹配器
         matcher.children.forEach(removeRoute)
         matcher.alias.forEach(removeRoute)
       }
     } else {
+      // 根据匹配器索引删除
       const index = matchers.indexOf(matcherRef)
       if (index > -1) {
         matchers.splice(index, 1)
-        if (matcherRef.record.name) matcherMap.delete(matcherRef.record.name)
+        if (matcherRef.record.name)
+          matcherMap.delete(matcherRef.record.name)
+        // 递归删除相关联的匹配器
         matcherRef.children.forEach(removeRoute)
         matcherRef.alias.forEach(removeRoute)
       }
@@ -232,6 +259,11 @@ export function createRouterMatcher(
       matcherMap.set(matcher.record.name, matcher)
   }
 
+  /**
+   * 路由解析的核心方法
+   * @param location 原始的location
+   * @param currentLocation 当前位置
+   */
   function resolve(
     location: Readonly<MatcherLocationRaw>,
     currentLocation: Readonly<MatcherLocation>
@@ -241,6 +273,7 @@ export function createRouterMatcher(
     let path: MatcherLocation['path']
     let name: MatcherLocation['name']
 
+    // 如果location有name, 从matcherMap获取对应matcher
     if ('name' in location && location.name) {
       matcher = matcherMap.get(location.name)
 
@@ -265,6 +298,7 @@ export function createRouterMatcher(
       }
 
       name = matcher.record.name
+      // 合并参数
       params = assign(
         // paramsFromLocation is a new object
         paramsFromLocation(
@@ -287,10 +321,12 @@ export function createRouterMatcher(
           )
       )
       // throws if cannot be stringified
+      // 生成路径path
       path = matcher.stringify(params)
     } else if (location.path != null) {
       // no need to resolve the path with the matcher as it was provided
       // this also allows the user to control the encoding
+      // 没有name,有path
       path = location.path
 
       if (__DEV__ && !path.startsWith('/')) {
@@ -299,6 +335,7 @@ export function createRouterMatcher(
         )
       }
 
+      // 用matchers匹配路径获取matcher
       matcher = matchers.find(m => m.re.test(path))
       // matcher should have a value after the loop
 
@@ -309,15 +346,15 @@ export function createRouterMatcher(
       }
       // location is a relative path
     } else {
+      // 如果两者都没有,以currentLocation匹配
       // match by name or path of current route
       matcher = currentLocation.name
         ? matcherMap.get(currentLocation.name)
         : matchers.find(m => m.re.test(currentLocation.path))
+
+      // 如果仍未匹配则报错
       if (!matcher)
-        throw createRouterError<MatcherError>(ErrorTypes.MATCHER_NOT_FOUND, {
-          location,
-          currentLocation,
-        })
+        throw createRouterError<MatcherError>(ErrorTypes.MATCHER_NOT_FOUND, { location, currentLocation })
       name = matcher.record.name
       // since we are navigating to the same location, we don't need to pick the
       // params like when `name` is provided
@@ -325,6 +362,7 @@ export function createRouterMatcher(
       path = matcher.stringify(params)
     }
 
+    // 从matcher向上递归生成matched匹配链表
     const matched: MatcherLocation['matched'] = []
     let parentMatcher: RouteRecordMatcher | undefined = matcher
     while (parentMatcher) {
@@ -334,6 +372,7 @@ export function createRouterMatcher(
       parentMatcher = parentMatcher.parent
     }
 
+    // 返回解析后的location对象
     return {
       name,
       path,
@@ -343,7 +382,7 @@ export function createRouterMatcher(
     }
   }
 
-  // add initial routes
+  // 初始时调用addRoute处理routes配置
   routes.forEach(route => addRoute(route))
 
   function clearRoutes() {

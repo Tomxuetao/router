@@ -383,9 +383,14 @@ export interface Router {
  * @param options - {@link RouterOptions}
  */
 export function createRouter(options: RouterOptions): Router {
+  // 创建路由匹配器matcher,用于后续匹配路由配置。
   const matcher = createRouterMatcher(options.routes, options)
+
+  // 定义解析查询参数和序列化查询参数的方法parseQuery和stringifyQuery。
   const parseQuery = options.parseQuery || originalParseQuery
   const stringifyQuery = options.stringifyQuery || originalStringifyQuery
+
+  // 接收history实现对象routerHistory
   const routerHistory = options.history
   if (__DEV__ && !routerHistory)
     throw new Error(
@@ -393,12 +398,14 @@ export function createRouter(options: RouterOptions): Router {
         ' https://router.vuejs.org/api/interfaces/RouterOptions.html#history'
     )
 
+  // 定义路由导航守卫 beforeGuards、beforeResolveGuards、afterGuards。
   const beforeGuards = useCallbacks<NavigationGuardWithThis<undefined>>()
   const beforeResolveGuards = useCallbacks<NavigationGuardWithThis<undefined>>()
   const afterGuards = useCallbacks<NavigationHookAfter>()
-  const currentRoute = shallowRef<RouteLocationNormalizedLoaded>(
-    START_LOCATION_NORMALIZED
-  )
+
+  // 创建当前路由响应式 shallowRef 对象currentRoute。
+  const currentRoute = shallowRef<RouteLocationNormalizedLoaded>(START_LOCATION_NORMALIZED)
+
   let pendingLocation: RouteLocation = START_LOCATION_NORMALIZED
 
   // leave the scrollRestoration if no scrollBehavior is provided
@@ -687,8 +694,10 @@ export function createRouter(options: RouterOptions): Router {
     // to could be a string where `replace` is a function
     const replace = (to as RouteLocationOptions).replace === true
 
+    // 检查该路由记录是否包含重定向记录
     const shouldRedirect = handleRedirectRecord(targetLocation)
 
+    // 如果有重定向,则递归调用 pushWithRedirect 进行重定向导航
     if (shouldRedirect)
       return pushWithRedirect(
         assign(locationAsObject(shouldRedirect), {
@@ -709,6 +718,7 @@ export function createRouter(options: RouterOptions): Router {
     toLocation.redirectedFrom = redirectedFrom
     let failure: NavigationFailure | void | undefined
 
+    // 检查重复导航
     if (!force && isSameRouteLocation(stringifyQuery, from, targetLocation)) {
       failure = createRouterError<NavigationFailure>(
         ErrorTypes.NAVIGATION_DUPLICATED,
@@ -727,7 +737,9 @@ export function createRouter(options: RouterOptions): Router {
       )
     }
 
+    // 调用 navigate 触发标准导航流程
     return (failure ? Promise.resolve(failure) : navigate(toLocation, from))
+      // 处理可能出现的错误情况
       .catch((error: NavigationFailure | NavigationRedirectError) =>
         isNavigationFailure(error)
           ? // navigation redirects still mark the router as ready
@@ -834,16 +846,12 @@ export function createRouter(options: RouterOptions): Router {
   ): Promise<any> {
     let guards: Lazy<any>[]
 
-    const [leavingRecords, updatingRecords, enteringRecords] =
-      extractChangingRecords(to, from)
+    // 提取当前路由变化的记录为离开记录、更新记录和进入记录
+    const [leavingRecords, updatingRecords, enteringRecords] = extractChangingRecords(to, from)
 
     // all components here have been resolved once because we are leaving
-    guards = extractComponentsGuards(
-      leavingRecords.reverse(),
-      'beforeRouteLeave',
-      to,
-      from
-    )
+    // 为离开的记录提取组件内beforeRouteLeave守卫
+    guards = extractComponentsGuards(leavingRecords.reverse(), 'beforeRouteLeave', to, from)
 
     // leavingRecords is already reversed
     for (const record of leavingRecords) {
@@ -852,16 +860,14 @@ export function createRouter(options: RouterOptions): Router {
       })
     }
 
-    const canceledNavigationCheck = checkCanceledNavigationAndReject.bind(
-      null,
-      to,
-      from
-    )
+    // 在整个流程中检测新的导航是否发生从而中断导航
+    const canceledNavigationCheck = checkCanceledNavigationAndReject.bind(null, to, from)
 
     guards.push(canceledNavigationCheck)
 
     // run the queue of per route beforeRouteLeave guards
     return (
+      // 执行 beforeRouteLeave 守卫
       runGuardQueue(guards)
         .then(() => {
           // check global guards beforeEach
@@ -871,16 +877,13 @@ export function createRouter(options: RouterOptions): Router {
           }
           guards.push(canceledNavigationCheck)
 
+          // 执行全局 beforeEach 守卫
           return runGuardQueue(guards)
         })
         .then(() => {
+          // 为更新的记录提取组件内 beforeRouteUpdate 守卫并执行
           // check in components beforeRouteUpdate
-          guards = extractComponentsGuards(
-            updatingRecords,
-            'beforeRouteUpdate',
-            to,
-            from
-          )
+          guards = extractComponentsGuards(updatingRecords, 'beforeRouteUpdate', to, from)
 
           for (const record of updatingRecords) {
             record.updateGuards.forEach(guard => {
@@ -893,6 +896,7 @@ export function createRouter(options: RouterOptions): Router {
           return runGuardQueue(guards)
         })
         .then(() => {
+          // 为进入的记录提取路由配置的 beforeEnter 守卫并执行
           // check the route beforeEnter
           guards = []
           for (const record of enteringRecords) {
@@ -912,6 +916,7 @@ export function createRouter(options: RouterOptions): Router {
           return runGuardQueue(guards)
         })
         .then(() => {
+          // 为进入的记录提取组件内 beforeRouteEnter 守卫并执行
           // NOTE: at this point to.matched is normalized and does not contain any () => Promise<Component>
 
           // clear existing enterCallbacks, these are added by extractComponentsGuards
@@ -931,6 +936,7 @@ export function createRouter(options: RouterOptions): Router {
           return runGuardQueue(guards)
         })
         .then(() => {
+          // 执行全局 beforeResolve 守卫
           // check global guards beforeResolve
           guards = []
           for (const guard of beforeResolveGuards.list()) {
@@ -1227,7 +1233,9 @@ export function createRouter(options: RouterOptions): Router {
   let started: boolean | undefined
   const installedApps = new Set<App>()
 
+  // 创建路由实例,并返回:
   const router: Router = {
+    // 前路由currentRoute
     currentRoute,
     listening: true,
 
@@ -1252,6 +1260,7 @@ export function createRouter(options: RouterOptions): Router {
     onError: errorListeners.add,
     isReady,
 
+    // 用于插件化安装
     install(app: App) {
       const router = this
       app.component('RouterLink', RouterLink)
